@@ -26,7 +26,7 @@ export async function POST(req, context) {
  const user = await getUserToken(userId);
 console.log("User token data:", user);
 
-  if (user.tokenUsed >= 10) {
+  if (user.tokenUsed >= user.tokenLimit) {
     return new Response(JSON.stringify({ error: 'Token limit exceeded' }), {
       status: 403,
       headers: {
