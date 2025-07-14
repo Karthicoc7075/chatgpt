@@ -13,6 +13,7 @@ const openai = new OpenAI({
 
 
 export async function POST(req, {params}) {
+    try{
 
   const chatId = params?.id;
 
@@ -131,6 +132,11 @@ await updateUserToken(userId, totalTokens + replyTokens);
   });
 
 
+    }
+catch (error) {
+        console.error("Error in chat route:", error);
+        return NextResponse.json({ error: 'Failed to process chat' }, { status: 500 });
+    }
 
 }
 

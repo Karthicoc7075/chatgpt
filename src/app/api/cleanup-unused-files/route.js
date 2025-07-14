@@ -3,7 +3,8 @@ import connectToDatabase  from '../../../lib/mongodb'
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const db = await connectToDatabase();
+  try{
+     const db = await connectToDatabase();
   const cutoff = new Date(Date.now() - 15 * 60 * 1000); // 15 minutes ago
 
   const oldFiles = await db.collection('uploads').find({
@@ -27,4 +28,8 @@ export async function GET() {
       'Content-Type': 'application/json',
     },
   });
+  }catch (error) {
+      console.error("Error in cleanup route:", error);
+      return NextResponse.json({ error: 'Failed to cleanup files' }, { status: 500 });
+  }
 }
