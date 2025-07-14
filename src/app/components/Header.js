@@ -161,7 +161,7 @@ function Header() {
           className="absolute bg-[#353535] rounded-2xl shadow-lg w-68 z-[1000]"
           style={{ top: modalProfilePosition.top, left: modalProfilePosition.left }}
         >
-          <ul className="py-2">
+          <ul className="py-2 z-100">
 
 
             <li
