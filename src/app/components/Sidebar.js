@@ -164,22 +164,30 @@ const Sidebar = () => {
               <Loader size="sm"   />
             </div>
             }
-            {  chats.map((chat) => (
-              <div
-                onClick={() => Navigate(`/chat/${chat._id}`)}
-                key={chat._id}
-                className={`flex justify-between items-center p-2 ${chatId==chat._id ? "bg-[#444444]":"none"}   group hover:bg-[#444444] rounded-lg`}
-              >
-                <p className="text-gray-100 text-sm truncate">{chat.title}</p>
-                <button
-                  ref={buttonRef}
-                  onClick={(e) => handleButtonClick(chat, e)}
-                  className="opacity-100 md:opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-300 transition-opacity duration-200"
-                >
-                  <GoKebabHorizontal className="h-5 w-5" /> 
-                </button>
+            { 
+              chats.length == 0 && !loading? (
+               <div className=" flex items-center justify-center h-30" >
+                <p className="text-gray-400 text-sm">No chats </p>
               </div>
-            ))}
+              ) : (
+                chats.map((chat) => (
+                  <div
+                    onClick={() => Navigate(`/chat/${chat._id}`)}
+                    key={chat._id}
+                    className={`flex justify-between items-center p-2 ${chatId==chat._id ? "bg-[#444444]":"none"}   group hover:bg-[#444444] rounded-lg`}
+                  >
+                    <p className="text-gray-100 text-sm truncate">{chat.title}</p>
+                    <button
+                      ref={buttonRef}
+                      onClick={(e) => handleButtonClick(chat, e)}
+                      className="opacity-100 md:opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-300 transition-opacity duration-200"
+                    >
+                      <GoKebabHorizontal className="h-5 w-5" /> 
+                    </button>
+                  </div>
+                ))
+              )
+            }
 
           </div>
        </div>
