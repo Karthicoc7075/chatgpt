@@ -8,7 +8,7 @@ import { NextResponse } from 'next/server';
 
 const enc = encoding_for_model("gpt-4o");
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // Store in .env.local
+  apiKey: process.env.OPENAI_API_KEY, 
 });
 
 

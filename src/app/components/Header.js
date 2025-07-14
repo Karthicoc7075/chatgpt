@@ -39,12 +39,12 @@ function Header() {
 
   const handleMoreButtonClick = (event) => {
     setProfileModelOpen(false);
-    toggleModal(event, setMoreDetailsOpen, setModalMoreDetailsPosition, -104);
+    toggleModal(event, setMoreDetailsOpen, setModalMoreDetailsPosition, -364);
   };
 
   const handleProfileButtonClick = (event) => {
     setMoreDetailsOpen(false);
-    toggleModal(event, setProfileModelOpen, setModalProfilePosition, -236);
+    toggleModal(event, setProfileModelOpen, setModalProfilePosition, -496);
   };
 
   useEffect(() => {
@@ -132,7 +132,7 @@ function Header() {
       {moreDetailsOpen && (
         <div
           ref={modalRef}
-          className="absolute bg-[#353535] rounded-2xl shadow-lg w-35 z-200"
+          className="fixed bg-[#353535] rounded-2xl shadow-lg w-35 z-200"
           style={{ top: modalMoreDetailsPosition.top, left: modalMoreDetailsPosition.left }}
         >
           <ul className="py-1">
@@ -158,7 +158,7 @@ function Header() {
       {profileModelOpen &&
         <div
           ref={modalRef}
-          className="absolute bg-[#353535] rounded-2xl shadow-lg w-68 z-200"
+          className="absolute bg-[#353535] rounded-2xl shadow-lg w-68 z-[1000]"
           style={{ top: modalProfilePosition.top, left: modalProfilePosition.left }}
         >
           <ul className="py-2">
