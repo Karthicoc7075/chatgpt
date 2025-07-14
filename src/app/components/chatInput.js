@@ -159,8 +159,8 @@ function ChatInput({ input, handleInputChange, handleSubmit,isMessageLoading, se
 
   return (
 
-    <div className='relative w-full flex  justify-center px-4 '  >
-      <div className=' w-full ' >
+    <div className='relative w-full flex  justify-center px-4 z-10 '  >
+      <div className='w-full  ' >
         <form className="max-w-2xl py-3 px-2 rounded-3xl bg-[#303030] mx-auto z-[100]" onSubmit={e => handleSubmit(e, fileUrl, imagePreview)}>
 
           {isFile && file?.type.startsWith("image/") ? (

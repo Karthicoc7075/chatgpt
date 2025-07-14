@@ -170,12 +170,7 @@ function Header() {
               <BiUserCircle className="inline w-5 h-4 mr-1.5" />
               {user?.primaryEmailAddress.emailAddress || 'User Name'}
             </li>
-            <li
-              className="mx-2.5 my-1.5 p-1.5 text-sm text-gray-100 hover:bg-[#444444] rounded-lg cursor-pointer"
-            >
-              <HiSparkles className="inline w-5 h-4 mr-1.5" />
-              Upgrade plan
-            </li>
+           
             <li
 
               className="mx-2.5 my-1.5 p-1.5 text-sm text-grey-400 hover:bg-[#444444] rounded-lg cursor-pointer"
