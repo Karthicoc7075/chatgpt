@@ -24,6 +24,7 @@ const MessageMarkdown = ({ content }) => {
             components={{
                 code({ node, inline, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || '');
+                    const { node: _, inline: __, ...otherProps } = props; 
                     return !inline && match ? (
                         <div  className='bg-[#000] rounded-xl pb-2' >
                             <div className='flex justify-between items-center px-3 pt-2' >
@@ -43,7 +44,7 @@ const MessageMarkdown = ({ content }) => {
                                 style={{...atomDark,backgroundColor: '#000000' }}
                                 language={match[1]}
                                 PreTag="div"
-                                {...props}
+                                {...otherProps}
                                 className="custom-syntax-highlight"
                             >
                                 {String(children).replace(/\n$/, '')}

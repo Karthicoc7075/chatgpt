@@ -72,7 +72,7 @@ function ChatBox({ messages,setMessages,isThinking,setEditMessage ,setRemovedMes
 
 
     return (
-        <div className='flex  justify-center w-full  h-[calc(100vh-100px)] overflow-y-auto  ' >
+        <div className='flex  justify-center w-full  h-[calc(100vh-100px)] overflow-y-auto pt-10 ' >
 
             <div className='mx-10 px-6  flex-1 w-full  sm:max-w-[90vw] md:max-w-2xl bg-[#212121] text-white mt-5  '>
                 {

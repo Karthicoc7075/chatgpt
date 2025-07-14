@@ -2,8 +2,7 @@
 import { useEffect, useState,useRef } from 'react';
 import { useChat } from 'ai/react';
 import ChatBox from '../../components/chatBox';
-import Sidebar from '../../components/Sidebar';
-import Header from '../../components/Header';
+
 import ChatInput from '../../components/chatInput';
 import Loader from '../../components/loader';
 import { useParams } from 'next/navigation';
@@ -191,7 +190,7 @@ const typingInterval = setInterval(() => {
     const newMessage = { role: 'user', content: input, file };
     setInput('');
     setMessages((prevMessages) => [...prevMessages, newMessage]);
-    const isNewMessage = true; // Set this to true to indicate a new message
+    const isNewMessage = true; 
     await fetchAiReply([...messages, newMessage],isNewMessage);
     
     }

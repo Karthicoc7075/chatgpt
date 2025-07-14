@@ -89,7 +89,7 @@ console.log("User token data:", user);
           },
         ],
       };
-    } else if (!msg.file?.isImage && role == 'user') {
+    } else if (!msg.file?.isImage && fileExtractData && role == 'user') {
       return {
         role,
         content: `${msg.content}\n\nFile content:\n${fileExtractData || ''}`,

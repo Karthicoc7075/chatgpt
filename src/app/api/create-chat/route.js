@@ -19,7 +19,7 @@ export async function POST(req) {
   }
 
   const userToken = await getUserToken(user.id);
-  if (userToken.tokenUsed >= 10) 
+  if (userToken.tokenUsed >= userToken.tokenLimit) 
     return NextResponse.json({ error: 'Token limit exceeded' }, { status: 403 });
    console.log('Creating chat with file:', file);
 
