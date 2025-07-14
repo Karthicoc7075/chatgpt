@@ -1,6 +1,6 @@
-// app/api/cleanup-unused-files/route.ts
 import cloudinary from '../../../lib/cloundinary';
 import connectToDatabase  from '../../../lib/mongodb'
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   const db = await connectToDatabase();
@@ -18,7 +18,13 @@ export async function GET() {
     await db.collection('uploads').deleteOne({ _id: file._id });
   }
 
-  return new Response(JSON.stringify({
+  return NextResponse.json({
     deleted: oldFiles.length,
-  }));
+  },
+  {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 }

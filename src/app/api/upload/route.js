@@ -1,5 +1,7 @@
 import cloudinary from '../../../lib/cloundinary';
 import {savePendingFile} from '../../../db/files'
+import { NextResponse } from 'next/server';
+
 export async function POST(req) {
   const formData = await req.formData();
   const file = formData.get('file');
@@ -40,10 +42,8 @@ console.log('file', file);
   uploadedAt: new Date(),
   status: 'pending',
 });
-    return new Response(JSON.stringify(result), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return NextResponse.json(result);
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Upload failed' }), { status: 500 });
+    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
 }

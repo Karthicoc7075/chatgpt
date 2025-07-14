@@ -1,6 +1,5 @@
 import { getAllChatsMeta } from "../../../../db/chat";
-
-
+import { NextResponse } from 'next/server';
 
 export async function GET(req, context) {
     const params = await context.params;
@@ -9,20 +8,9 @@ export async function GET(req, context) {
     
     try {
         const chatsMeta = await getAllChatsMeta(userId);
-    
-        return new Response(JSON.stringify(chatsMeta), {
-        status: 200,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        });
+        return NextResponse.json(chatsMeta);
     } catch (error) {
-        console.error('Error fetching chats meta:', error);
-        return new Response(JSON.stringify({ error: 'Failed to fetch chats meta' }), {
-        status: 500,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        });
+        console.error("Error fetching chats meta:", error);
+        return NextResponse.json({ error: 'Failed to fetch chats meta' }, { status: 500 });
     }
     }

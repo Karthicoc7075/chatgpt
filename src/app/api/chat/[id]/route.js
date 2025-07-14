@@ -4,6 +4,7 @@ import { deleteFile, markFileAsUsed } from '../../../../db/files';
 import {extractText} from '../../../../lib/extractText'
 import { encoding_for_model } from "tiktoken";
 import { updateUserToken,getUserToken } from '../../../../db/user';
+import { NextResponse } from 'next/server';
 
 const enc = encoding_for_model("gpt-4o");
 const openai = new OpenAI({
@@ -11,10 +12,9 @@ const openai = new OpenAI({
 });
 
 
-export async function POST(req, context) {
-  const params = await context.params;
+export async function POST(req, {params}) {
 
-  const chatId = params.id;
+  const chatId = params?.id;
 
 
   const { messages, editMessage, removedMessages,isNewMessage,userId } = await req.json();
@@ -27,12 +27,7 @@ export async function POST(req, context) {
 console.log("User token data:", user);
 
   if (user.tokenUsed >= user.tokenLimit) {
-    return new Response(JSON.stringify({ error: 'Token limit exceeded' }), {
-      status: 403,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return new NextResponse.json({ error: 'Token limit exceeded' }, { status: 403 });
   }
 
 
@@ -131,12 +126,9 @@ await updateUserToken(userId, totalTokens + replyTokens);
 
   await updateChatWithReply(chatId, reply);
 
-  return new Response(JSON.stringify({ content: reply, chatId }), {
+  return  NextResponse.json({ content: reply, chatId }, {
     status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  });
 
 
 
