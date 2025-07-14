@@ -104,8 +104,14 @@ console.log("User token data:", user);
 
 let totalTokens = 0;
 for (const msg of history) {
-  totalTokens += 4; // base per message
-  totalTokens += enc.encode(msg.content).length;
+  console.log(msg);
+  
+  totalTokens += 4; 
+  if (Array.isArray(msg.content) && msg.content[0]?.text) {
+    totalTokens += enc.encode(msg.content[0].text).length + 200;
+  } else if (typeof msg.content === 'string') {
+    totalTokens += enc.encode(msg.content).length;
+  }
 }
 
 

@@ -132,7 +132,7 @@ function Header() {
       {moreDetailsOpen && (
         <div
           ref={modalRef}
-          className="fixed bg-[#353535] rounded-2xl shadow-lg w-35 z-200"
+          className="absolute bg-[#353535] rounded-2xl shadow-lg w-35 z-200"
           style={{ top: modalMoreDetailsPosition.top, left: modalMoreDetailsPosition.left }}
         >
           <ul className="py-1">

@@ -39,19 +39,14 @@ const triggerToast = () => {
   useEffect(() => {
     const fetchChat = async () => {
       console.log(user, 'user data');
-      
-         const userId = user?.id; 
+       const userId =await user.id; 
 
-         if(!userId) {
-          console.error('User not authenticated');
-          setErrorMessage('User not authenticated');
-          setIsLoading(false);
-          triggerToast();
-         }
+
+        
 
       try {
      
-console.log('Fetching chat for userId:', userId, 'chatId:', chatId);
+
 
         const response = await fetch(`/api/get-chat?id=${chatId}&userId=${userId}`, {
           method: 'GET',
@@ -78,7 +73,7 @@ console.log('Fetching chat for userId:', userId, 'chatId:', chatId);
     };
 
     fetchChat();
-  }, [chatId]);
+  }, [chatId,user]);
 
 
 
