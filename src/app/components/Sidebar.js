@@ -50,7 +50,7 @@ const Sidebar = () => {
     if(userId) {
       fetchChatsMeta(userId);
     }
-  }, [userId]); 
+  }, [userId, chatId]); 
 
   const handleButtonClick = (chat, event) => {
     setSelectedChat(chat);
