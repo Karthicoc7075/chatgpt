@@ -71,11 +71,8 @@ function Header() {
 
   return (
    <div
-     className="fixed"
-     style={{
-       width: isSidebarClosed ? '100dvw' : 'calc(100dvw - 256px)',
-        transition: 'width 0.3s ease-in-out',
-     }}
+     className={`${isSidebarOpen ? 'ml-64' : 'ml-0'} transition-all duration-300`}
+
    >
      <div className=" bg-[#212121]  text-white px-5 py-1   flex justify-between  items-center">
       <div className='md:hidden flex items-center' >

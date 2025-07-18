@@ -3,7 +3,6 @@ import axios from 'axios';
 import pdfParse from 'pdf-parse';
 import mammoth from 'mammoth';
 import path from 'path';
-import textract from 'textract';
 
 
 export async function extractText(fileUrl) {
@@ -31,7 +30,6 @@ export async function extractText(fileUrl) {
         fileExtractData = buffer.toString();
       }
       else if (ext === '.json') {
-        
         fileExtractData = JSON.parse(buffer.toString());
       } else if (ext === '.csv') {
         const csv = buffer.toString();

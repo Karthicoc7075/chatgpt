@@ -10,18 +10,24 @@ import Loader from "./loader";
 import { useParams, useRouter } from "next/navigation";
 import {useUser } from '@clerk/nextjs';
 import { useLayout } from '../context/LayoutContext'; // Import the Layout context
+import Model from './model';
+
+
 const Sidebar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [loading, setLoading] = useState(true);
   const [chats, setChats] = useState([]);
-  const buttonRef = useRef(null);
+  const [isEditChat, setIsEditChat] = useState(false);
+  const [editedChatId, setEditedChatId] = useState(null);
+  const [editChatInput, setEditChatInput] = useState('');
+  const modelRef = useRef(null);
   const router = useRouter();
   const { chatId } = useParams();
   const { user } = useUser();
   const userId = user?.id; 
-  const { isSidebarOpen, setIsSidebarOpen, isSidebarClosed, setIsSidebarClosed } = useLayout(); 
+  const { isSidebarOpen, setIsSidebarOpen, isSidebarClosed, setIsSidebarClosed,setDeleteModelOpen,setDeleteChatId,deleteChatId } = useLayout(); 
 
 
 
@@ -50,7 +56,7 @@ const Sidebar = () => {
     if(userId) {
       fetchChatsMeta(userId);
     }
-  }, [userId, chatId]); 
+  }, [userId, chatId, deleteChatId, editedChatId]); 
 
   const handleButtonClick = (chat, event) => {
     setSelectedChat(chat);
@@ -64,7 +70,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (buttonRef.current && !buttonRef.current.contains(event.target)) {
+      if (modelRef.current && !modelRef.current.contains(event.target)) {
         setIsModalOpen(false);
       }
     };
@@ -72,14 +78,17 @@ const Sidebar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle modal actions
+
   const handleShare = () => {
     console.log(`Share chat: ${selectedChat.name}`);
     setIsModalOpen(false);
   };
 
   const handleRename = () => {
-    console.log(`Rename chat: ${selectedChat.name}`);
+    console.log(`Rename chat: ${selectedChat.title}`);
+    setIsEditChat(true);
+    setEditChatInput(selectedChat.title);
+    setEditedChatId(selectedChat._id);
     setIsModalOpen(false);
   };
 
@@ -88,18 +97,53 @@ const Sidebar = () => {
     setIsModalOpen(false);
   };
 
-  const handleDelete = () => {
-    console.log(`Delete chat: ${selectedChat.name}`);
+  const handleDelete = (id) => {
+    
+    setDeleteChatId(id)
+    setDeleteModelOpen(true);
     setIsModalOpen(false);
   };
 
 
-  const Navigate = (path) => {
-    router.push(path);
+  const Navigate = (id) => {
+    console.log(`Navigating to: ${id}, chatId: ${chatId}, isEditChat: ${isEditChat}`);
+    if(id === chatId && isEditChat) {
+      return;
+    }
+
+    setEditChatInput('');
+    setIsEditChat(false);
+    router.push(`/chat/${id}`);
+    console.log(`Navigating to: ${id}`);
   };
 
 
-  console.log('loading', loading);
+ 
+
+  const handleEnterPress = async (e) => {
+  if (e.key === 'Enter') {
+     try {
+      const response = await fetch('/api/rename-chat', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ chatId, newTitle: editChatInput }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to rename chat');
+      }
+    } catch (error) {
+      console.error('Error renaming chat:', error);
+    } finally {
+      setEditChatInput('');
+      setIsEditChat(false);
+      setEditedChatId(null);
+    }
+  }
+};
+
   
   return (
     <>    
@@ -112,7 +156,7 @@ const Sidebar = () => {
       >
        
           <div className="flex w-full justify-between p-2 "  >
-          <div onClick={()=>Navigate('/')} className="flex justify-center items-center hover:bg-[#2f2f2f] cursor-pointer p-2 rounded-lg text-sm text-gray-200 hover:bg-[#444444]" >
+          <div onClick={()=>router.push('/')} className="flex justify-center items-center hover:bg-[#2f2f2f] cursor-pointer p-2 rounded-lg text-sm text-gray-200 hover:bg-[#444444]" >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="icon-lg"><path d="M11.2475 18.25C10.6975 18.25 10.175 18.1455 9.67999 17.9365C9.18499 17.7275 8.74499 17.436 8.35999 17.062C7.94199 17.205 7.50749 17.2765 7.05649 17.2765C6.31949 17.2765 5.63749 17.095 5.01049 16.732C4.38349 16.369 3.87749 15.874 3.49249 15.247C3.11849 14.62 2.93149 13.9215 2.93149 13.1515C2.93149 12.8325 2.97549 12.486 3.06349 12.112C2.62349 11.705 2.28249 11.2375 2.04049 10.7095C1.79849 10.1705 1.67749 9.6095 1.67749 9.0265C1.67749 8.4325 1.80399 7.8605 2.05699 7.3105C2.30999 6.7605 2.66199 6.2875 3.11299 5.8915C3.57499 5.4845 4.10849 5.204 4.71349 5.05C4.83449 4.423 5.08749 3.862 5.47249 3.367C5.86849 2.861 6.35249 2.465 6.92449 2.179C7.49649 1.893 8.10699 1.75 8.75599 1.75C9.30599 1.75 9.82849 1.8545 10.3235 2.0635C10.8185 2.2725 11.2585 2.564 11.6435 2.938C12.0615 2.795 12.496 2.7235 12.947 2.7235C13.684 2.7235 14.366 2.905 14.993 3.268C15.62 3.631 16.1205 4.126 16.4945 4.753C16.8795 5.38 17.072 6.0785 17.072 6.8485C17.072 7.1675 17.028 7.514 16.94 7.888C17.38 8.295 17.721 8.768 17.963 9.307C18.205 9.835 18.326 10.3905 18.326 10.9735C18.326 11.5675 18.1995 12.1395 17.9465 12.6895C17.6935 13.2395 17.336 13.718 16.874 14.125C16.423 14.521 15.895 14.796 15.29 14.95C15.169 15.577 14.9105 16.138 14.5145 16.633C14.1295 17.139 13.651 17.535 13.079 17.821C12.507 18.107 11.8965 18.25 11.2475 18.25ZM7.17199 16.1875C7.72199 16.1875 8.20049 16.072 8.60749 15.841L11.7095 14.059C11.8195 13.982 11.8745 13.8775 11.8745 13.7455V12.3265L7.88149 14.62C7.63949 14.763 7.39749 14.763 7.15549 14.62L4.03699 12.8215C4.03699 12.8545 4.03149 12.893 4.02049 12.937C4.02049 12.981 4.02049 13.047 4.02049 13.135C4.02049 13.696 4.15249 14.213 4.41649 14.686C4.69149 15.148 5.07099 15.511 5.55499 15.775C6.03899 16.05 6.57799 16.1875 7.17199 16.1875ZM7.33699 13.498C7.40299 13.531 7.46349 13.5475 7.51849 13.5475C7.57349 13.5475 7.62849 13.531 7.68349 13.498L8.92099 12.7885L4.94449 10.4785C4.70249 10.3355 4.58149 10.121 4.58149 9.835V6.2545C4.03149 6.4965 3.59149 6.8705 3.26149 7.3765C2.93149 7.8715 2.76649 8.4215 2.76649 9.0265C2.76649 9.5655 2.90399 10.0825 3.17899 10.5775C3.45399 11.0725 3.81149 11.4465 4.25149 11.6995L7.33699 13.498ZM11.2475 17.161C11.8305 17.161 12.3585 17.029 12.8315 16.765C13.3045 16.501 13.6785 16.138 13.9535 15.676C14.2285 15.214 14.366 14.697 14.366 14.125V10.561C14.366 10.429 14.311 10.33 14.201 10.264L12.947 9.538V14.1415C12.947 14.4275 12.826 14.642 12.584 14.785L9.46549 16.5835C10.0045 16.9685 10.5985 17.161 11.2475 17.161ZM11.8745 11.122V8.878L10.01 7.822L8.12899 8.878V11.122L10.01 12.178L11.8745 11.122ZM7.05649 5.8585C7.05649 5.5725 7.17749 5.358 7.41949 5.215L10.538 3.4165C9.99899 3.0315 9.40499 2.839 8.75599 2.839C8.17299 2.839 7.64499 2.971 7.17199 3.235C6.69899 3.499 6.32499 3.862 6.04999 4.324C5.78599 4.786 5.65399 5.303 5.65399 5.875V9.4225C5.65399 9.5545 5.70899 9.659 5.81899 9.736L7.05649 10.462V5.8585ZM15.4385 13.7455C15.9885 13.5035 16.423 13.1295 16.742 12.6235C17.072 12.1175 17.237 11.5675 17.237 10.9735C17.237 10.4345 17.0995 9.9175 16.8245 9.4225C16.5495 8.9275 16.192 8.5535 15.752 8.3005L12.6665 6.5185C12.6005 6.4745 12.54 6.458 12.485 6.469C12.43 6.469 12.375 6.4855 12.32 6.5185L11.0825 7.2115L15.0755 9.538C15.1965 9.604 15.2845 9.692 15.3395 9.802C15.4055 9.901 15.4385 10.022 15.4385 10.165V13.7455ZM12.122 5.3635C12.364 5.2095 12.606 5.2095 12.848 5.3635L15.983 7.195C15.983 7.118 15.983 7.019 15.983 6.898C15.983 6.37 15.851 5.8695 15.587 5.3965C15.334 4.9125 14.9655 4.5275 14.4815 4.2415C14.0085 3.9555 13.4585 3.8125 12.8315 3.8125C12.2815 3.8125 11.803 3.928 11.396 4.159L8.29399 5.941C8.18399 6.018 8.12899 6.1225 8.12899 6.2545V7.6735L12.122 5.3635Z"></path></svg>
 
           </div>
@@ -131,7 +175,7 @@ const Sidebar = () => {
 
         <nav className="flex h-full flex-col space-y-1 p-4 overflow-y-hidden">
         <div className="mb-4" >
-                    <div onClick={()=>Navigate('/')} className="group flex p-2  items-center  gap-3 rounded-md hover:bg-[#444444] transition-colors duration-200 text-white cursor-pointer text-sm mb-1 flex-shrink-0">
+                    <div onClick={()=>router.push('/')} className="group flex p-2  items-center  gap-3 rounded-md hover:bg-[#444444] transition-colors duration-200 text-white cursor-pointer text-sm mb-1 flex-shrink-0">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="icon" aria-hidden="true"><path d="M2.6687 11.333V8.66699C2.6687 7.74455 2.66841 7.01205 2.71655 6.42285C2.76533 5.82612 2.86699 5.31731 3.10425 4.85156L3.25854 4.57617C3.64272 3.94975 4.19392 3.43995 4.85229 3.10449L5.02905 3.02149C5.44666 2.84233 5.90133 2.75849 6.42358 2.71582C7.01272 2.66769 7.74445 2.66797 8.66675 2.66797H9.16675C9.53393 2.66797 9.83165 2.96586 9.83179 3.33301C9.83179 3.70028 9.53402 3.99805 9.16675 3.99805H8.66675C7.7226 3.99805 7.05438 3.99834 6.53198 4.04102C6.14611 4.07254 5.87277 4.12568 5.65601 4.20313L5.45581 4.28906C5.01645 4.51293 4.64872 4.85345 4.39233 5.27149L4.28979 5.45508C4.16388 5.7022 4.08381 6.01663 4.04175 6.53125C3.99906 7.05373 3.99878 7.7226 3.99878 8.66699V11.333C3.99878 12.2774 3.99906 12.9463 4.04175 13.4688C4.08381 13.9833 4.16389 14.2978 4.28979 14.5449L4.39233 14.7285C4.64871 15.1465 5.01648 15.4871 5.45581 15.7109L5.65601 15.7969C5.87276 15.8743 6.14614 15.9265 6.53198 15.958C7.05439 16.0007 7.72256 16.002 8.66675 16.002H11.3337C12.2779 16.002 12.9461 16.0007 13.4685 15.958C13.9829 15.916 14.2976 15.8367 14.5447 15.7109L14.7292 15.6074C15.147 15.3511 15.4879 14.9841 15.7117 14.5449L15.7976 14.3447C15.8751 14.128 15.9272 13.8546 15.9587 13.4688C16.0014 12.9463 16.0017 12.2774 16.0017 11.333V10.833C16.0018 10.466 16.2997 10.1681 16.6667 10.168C17.0339 10.168 17.3316 10.4659 17.3318 10.833V11.333C17.3318 12.2555 17.3331 12.9879 17.2849 13.5771C17.2422 14.0993 17.1584 14.5541 16.9792 14.9717L16.8962 15.1484C16.5609 15.8066 16.0507 16.3571 15.4246 16.7412L15.1492 16.8955C14.6833 17.1329 14.1739 17.2354 13.5769 17.2842C12.9878 17.3323 12.256 17.332 11.3337 17.332H8.66675C7.74446 17.332 7.01271 17.3323 6.42358 17.2842C5.90135 17.2415 5.44665 17.1577 5.02905 16.9785L4.85229 16.8955C4.19396 16.5601 3.64271 16.0502 3.25854 15.4238L3.10425 15.1484C2.86697 14.6827 2.76534 14.1739 2.71655 13.5771C2.66841 12.9879 2.6687 12.2555 2.6687 11.333ZM13.4646 3.11328C14.4201 2.334 15.8288 2.38969 16.7195 3.28027L16.8865 3.46485C17.6141 4.35685 17.6143 5.64423 16.8865 6.53613L16.7195 6.7207L11.6726 11.7686C11.1373 12.3039 10.4624 12.6746 9.72827 12.8408L9.41089 12.8994L7.59351 13.1582C7.38637 13.1877 7.17701 13.1187 7.02905 12.9707C6.88112 12.8227 6.81199 12.6134 6.84155 12.4063L7.10132 10.5898L7.15991 10.2715C7.3262 9.53749 7.69692 8.86241 8.23218 8.32715L13.2791 3.28027L13.4646 3.11328ZM15.7791 4.2207C15.3753 3.81702 14.7366 3.79124 14.3035 4.14453L14.2195 4.2207L9.17261 9.26856C8.81541 9.62578 8.56774 10.0756 8.45679 10.5654L8.41772 10.7773L8.28296 11.7158L9.22241 11.582L9.43433 11.543C9.92426 11.432 10.3749 11.1844 10.7322 10.8271L15.7791 5.78027L15.8552 5.69629C16.185 5.29194 16.1852 4.708 15.8552 4.30371L15.7791 4.2207Z"></path></svg>
             New chat
           </div>
@@ -172,18 +216,31 @@ const Sidebar = () => {
               ) : (
                 chats.map((chat) => (
                   <div
-                    onClick={() => Navigate(`/chat/${chat._id}`)}
+                    onClick={() => Navigate(chat._id)}
                     key={chat._id}
                     className={`flex justify-between items-center p-2 ${chatId==chat._id ? "bg-[#444444]":"none"}   group hover:bg-[#444444] rounded-lg`}
                   >
+                  {isEditChat  && editedChatId === chat._id ? (
+                    <input
+                      type="text"
+                      value={editChatInput}
+                      onChange={(e) => setEditChatInput(e.target.value)}
+                    onKeyDown={handleEnterPress}
+                      className="bg-transparent focus:outline-none"
+                    />
+                  ) : (
+                    <>
                     <p className="text-gray-100 text-sm truncate">{chat.title}</p>
                     <button
-                      ref={buttonRef}
-                      onClick={(e) => handleButtonClick(chat, e)}
-                      className="opacity-100 md:opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-300 transition-opacity duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleButtonClick(chat, e)}}
+                      className="opacity-100 md:opacity-0 group-hover:opacity-100 z-100 text-gray-400 hover:text-gray-300 transition-opacity duration-200"
                     >
                       <GoKebabHorizontal className="h-5 w-5" /> 
                     </button>
+                  </>
+                  )}
                   </div>
                 ))
               )
@@ -193,9 +250,9 @@ const Sidebar = () => {
        </div>
         </nav>
 
-        {/* Modal */}
         {isModalOpen && (
           <div
+            ref={modelRef}
             className="absolute bg-[#353535] rounded-xl shadow-lg w-40 z-60"
             style={{ top: modalPosition.top, left: modalPosition.left }}
           >
@@ -223,7 +280,7 @@ const Sidebar = () => {
                 Archive
               </li>
               <li
-                onClick={handleDelete}
+                onClick={() => handleDelete(selectedChat._id)}
                 className="m-2 p-2 text-sm text-gray-100 hover:bg-[#444444] rounded-lg cursor-pointer"
               >
                 <MdOutlineDelete className="inline w-6 h-6 mr-2 text-red-400" />

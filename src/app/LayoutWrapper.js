@@ -4,12 +4,36 @@
 import { useLayout } from './context/LayoutContext';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import Model from './components/model';
 export default function LayoutWrapper({ children }) {
-  const { isSidebarClosed } = useLayout();
+  const { isSidebarClosed, deleteModelOpen, setDeleteModelOpen, deleteChatId ,setDeleteChatId} = useLayout();
+
+
+  const handleDeleteChat = async (chatId) => {
+    try {
+      const response = await fetch('/api/delete-chat', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ chatId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete chat');
+      }
+    } catch (error) {
+      console.error('Error deleting chat:', error);
+    } finally {
+      setDeleteModelOpen(false);
+      setDeleteChatId(null);
+    }
+  };
 
   return (
     <div className="flex flex-col h-[100dvh]  ">
   <main className="flex flex-1">
+   {deleteModelOpen && <Model  onClose={() => setDeleteModelOpen(false)} onDelete={() => handleDeleteChat(deleteChatId)} />}
     <div
       className={`${
         isSidebarClosed ? '-translate-x-full' : 'translate-x-0'
