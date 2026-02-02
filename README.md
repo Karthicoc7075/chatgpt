@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🤖 ChatGPT Clone – Full-Stack AI Chat Application
 
-## Getting Started
+A full-stack ChatGPT-like AI chat application built using Next.js, OpenAI API, MongoDB, Clerk Authentication, and Cloudinary.
+The app allows users to sign in securely, create chat conversations, and interact with an AI assistant in real time.
 
-First, run the development server:
+All features are built from scratch with a focus on scalability, clean architecture, and performance.
 
-```bash
+✨ Features
+
+🔐 Secure authentication using Clerk
+
+💬 Real-time AI chat powered by OpenAI API
+
+🧠 Persistent chat history stored in MongoDB
+
+🗂 Chat creation and conversation management
+
+☁️ Cloudinary integration for media/file storage
+
+📱 Fully responsive UI
+
+🚀 Optimized with Next.js App Router
+
+🛠 Tech Stack
+
+Frontend & Backend: Next.js (App Router)
+
+AI Integration: OpenAI API
+
+Authentication: Clerk
+
+Database: MongoDB
+
+Cloud Storage: Cloudinary
+
+Styling: Tailwind CSS
+
+Version Control: Git & GitHub
+
+🧩 Application Flow
+
+User signs up / logs in using Clerk
+
+User creates a new chat
+
+Messages are sent to OpenAI API
+
+AI responses are streamed back to the UI
+
+All conversations are saved in MongoDB
+
+Media files (if any) are stored using Cloudinary
+
+📂 Project Structure
+/app
+  /api
+  /chat
+/lib
+/models
+/db
+
+🔑 Environment Variables
+
+Create a .env.local file and add:
+
+OPENAI_API_KEY=your_openai_api_key
+MONGODB_URI=your_mongodb_connection_string
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
+CLERK_SECRET_KEY=your_clerk_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
+
+🚀 Getting Started
+# Install dependencies
+npm install
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open http://localhost:3000 in your browser.
