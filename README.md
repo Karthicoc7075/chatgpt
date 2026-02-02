@@ -1,11 +1,11 @@
-🤖 ChatGPT Clone – Full-Stack AI Chat Application
+### 🤖 ChatGPT Clone – Full-Stack AI Chat Application
 
 A full-stack ChatGPT-like AI chat application built using Next.js, OpenAI API, MongoDB, Clerk Authentication, and Cloudinary.
 The app allows users to sign in securely, create chat conversations, and interact with an AI assistant in real time.
 
 All features are built from scratch with a focus on scalability, clean architecture, and performance.
 
-✨ Features
+### ✨ Features
 
 🔐 Secure authentication using Clerk
 
@@ -21,7 +21,7 @@ All features are built from scratch with a focus on scalability, clean architect
 
 🚀 Optimized with Next.js App Router
 
-🛠 Tech Stack
+### 🛠 Tech Stack
 
 Frontend & Backend: Next.js (App Router)
 
@@ -37,7 +37,7 @@ Styling: Tailwind CSS
 
 Version Control: Git & GitHub
 
-🧩 Application Flow
+### 🧩 Application Flow
 
 User signs up / logs in using Clerk
 
@@ -51,7 +51,7 @@ All conversations are saved in MongoDB
 
 Media files (if any) are stored using Cloudinary
 
-📂 Project Structure
+### 📂 Project Structure
 /app
   /api
   /chat
@@ -59,7 +59,7 @@ Media files (if any) are stored using Cloudinary
 /models
 /db
 
-🔑 Environment Variables
+### 🔑 Environment Variables
 
 Create a .env.local file and add:
 
@@ -71,7 +71,7 @@ CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_secret
 
-🚀 Getting Started
+### 🚀 Getting Started
 # Install dependencies
 npm install
 
